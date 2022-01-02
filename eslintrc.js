@@ -1,0 +1,1 @@
+"no-nested-ternary" : "off" 

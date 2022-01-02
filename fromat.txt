@@ -1,0 +1,55 @@
+instance
+          .post("xx", { xxx })
+          .then((res) => {
+           
+          })
+          .catch((err) => {
+            
+          });
+
+
+
+  useEffect(()=>{
+
+  },[])
+
+
+
+  const handleXXXXX = ()=>{
+      instance
+          .post("xx", { xxx })
+          .then((res) => {
+           
+          })
+          .catch((err) => {
+            
+          });
+        
+  }
+
+
+
+For toasting: 
+
+import { toast } from "react-toastify";
+import ToastLoad from "components/ToastLoad";
+
+<ToastLoad />
+
+
+
+
+for pre loading:
+
+import BackDropProdcess from "components/Preloaders/BackDrop";
+const [loading, setLoading] = useState(true);
+
+
+if (loading) {
+  return (
+    <BackDropProdcess />
+  );
+}
+
+
+setLoading(false)

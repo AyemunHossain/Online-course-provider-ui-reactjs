@@ -1,0 +1,36 @@
+.main {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 120px;
+  margin: 64px 0;
+}
+
+h2 {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 70px;
+  line-height: 95px;
+  letter-spacing: -0.035em;
+  color: #333333;
+  margin: 0 0 28px 0;
+}
+
+p {
+  display: block;
+  width: 65%;
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+  letter-spacing: -0.035em;
+  color: #4f4f4f;
+  margin: 0 0 64px 0;
+}
+.image {
+  display: block;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
