@@ -35,15 +35,19 @@ export const CartProvider = ({ children }) => {
   
 
     useEffect(() => {
-      instance.get("api2/cart-icon-course/").then((res) => {
-        if (res.status === 200) {
-          {
-            res.data.map((course, index, arr) =>
-              dispatch({ type: "INITIAL", item: course.id })
-            );
+      instance
+        .get("api2/cart-icon-course/")
+        .then((res) => {
+          if (res.status === 200) {
+            {
+              res.data.map((course, index, arr) =>
+                dispatch({ type: "INITIAL", item: course.id })
+              );
+            }
           }
-        }
-      });
+        })
+        .catch((err) => {console.log(err)});
+
     }, []);
     
   return (

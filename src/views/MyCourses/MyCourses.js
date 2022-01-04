@@ -297,7 +297,7 @@ export default function MyCourses(props) {
                             href={`http://localhost:3000/course/${obj.item__slug}`}
                           >
                             <img
-                              src={`http://127.0.0.1:8000/cdn/media/${obj.item__image}`}
+                              src={`http://127.0.0.1:8000/media/${obj.item__image}`}
                               alt="..."
                               className={
                                 classes.imgRaised +

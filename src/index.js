@@ -23,7 +23,7 @@ import SearchPage from "views/QueryViews/SearchResult/SearchPage";
 var hist = createBrowserHistory();
 
 ReactDOM.render(
-    <Router history={hist} basename={process.env.PUBLIC_URL}>
+    <Router history={hist} >
       <Switch>
         <CartProvider>
           <Route exact path="/" component={LandingPage} />

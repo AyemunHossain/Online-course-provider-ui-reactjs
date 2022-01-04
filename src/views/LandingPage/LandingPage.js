@@ -16,6 +16,7 @@ import instance from "axios/axiosHeader";
 import { useHistory } from "react-router-dom";
 import ToastLoad from "components/ToastLoad";
 import BackDropProdcess from "components/Preloaders/BackDrop";
+import { useDispatchCart } from "views/CartManagement/cart";
 
 
 const useStyles = makeStyles(styles);
@@ -24,8 +25,9 @@ export default function LandingPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
   let history = useHistory();
-
-      const InitialCourseFormat = {
+  const dispatch = useDispatchCart();
+  
+  const InitialCourseFormat = {
         id:"",
         title: "",
         image: "",
@@ -44,26 +46,42 @@ export default function LandingPage(props) {
       const [courseList, setCourseList] = useState([InitialCourseFormat]);
 
   useEffect(() => {
-
-    try{
-      if (history.location.state.LoginToast === 1) {
-        toast.success("Welcome ...");
-
-        history.push({
-          state: { LoginToast: 0 },
-        });
-      }
-    }
-    catch{
-      console.log("Exception cased during the toast load.. ")
-    }
-
+    
     instance.get(`/api/courses/`).then((res) => {
       setCourseList(res.data.results);
+
+      try {
+        if (history.location.state.LoginToast === 1) {
+                toast.success("Welcome ...");
+                history.push({
+                  state: { LoginToast: 0 },
+                }); 
+
+        instance
+          .get("api2/cart-icon-course/")
+          .then((res) => {
+            if (res.status === 200) {
+              {
+                res.data.map((course, index, arr) =>
+                  dispatch({ type: "INITIAL", item: course.id })
+                );
+              }
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        }
+          
+      } catch {
+        console.log("error cased lading page cart item initializing");
+      }
     });
   }, []);
   
     if (courseList[0].id === "") {
+      
+
       return (
         <BackDropProdcess />
       );

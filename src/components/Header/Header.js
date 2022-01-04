@@ -108,6 +108,7 @@ export default function Header(props) {
       instance.get("api/user-status/").then((res) => {
         if (res.status === 200) {
           setUser(res.data);
+          console.log(res.data)
           //  if (history.location.state.LoginToast === 1) {
           //     if(res.data.admin){
           //       window.location.href("/admin/courses");

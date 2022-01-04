@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt from "jwt-decode";
 
 const instance = axios.create({
-  baseURL: "https://backend.techcyrus.com/",
+  baseURL: "http://127.0.0.1:8000/",
   headers: {
     Accept: "application/json",
     Authorization: localStorage.getItem("access_token")
@@ -11,6 +11,18 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
+// const instance = axios.create({
+//   baseURL: "https://backend.techcyrus.com/",
+//   headers: {
+//     Accept: "application/json",
+//     Authorization: localStorage.getItem("access_token")
+//       ? "JWT " + localStorage.getItem("access_token")
+//       : null,
+//     "Content-Type": "application/json",
+//   },
+// });
+
+
 
 instance.interceptors.response.use(
   (response) => {

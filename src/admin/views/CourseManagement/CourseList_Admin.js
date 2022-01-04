@@ -99,20 +99,15 @@ export default function CourseList_Admin(props) {
     });
   }, []);
 
-  const handleDeleteModalOpen = (index, rowData) => {
-    
-    setClassicDeleteModal(true)
-    setdDeleteID(rowData.id)
-    setdDeleteRow(index)
+  const handleDeleteModalOpen = (rowData, index) => {
+    setClassicDeleteModal(true);
+    setdDeleteID(index.id);
+    setdDeleteRow(index.tableData.id);
   };
 
   
 
     const handleDelete = () => {
-      
-
-      
-
       instance
       .delete(`AdminApi/courses/${deleteID}/`)
       .then((res) => {
@@ -150,15 +145,13 @@ export default function CourseList_Admin(props) {
 
 
   const handleCourseUpdate = (values) => {
+    
+    let formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("price", values.price);
+    formData.append("discount_price",values.discount_price ? values.discount_price : 0);
     instance
-      .patch(
-        `AdminApi/courses/${values.id}/`,
-        JSON.stringify({
-          title: values.title,
-          price: values.price,
-          discount_price: values.discount_price,
-        })
-      )
+      .patch(`AdminApi/courses/${values.id}/`, formData)
       .then((res) => {
         if (res.status === 200) {
           toast.success("Course Updated Successfully");
@@ -169,6 +162,8 @@ export default function CourseList_Admin(props) {
           arr[index].discount_price = values.discount_price;
           setCourseList(arr);
           setUpdateButton(true);
+        } else {
+          toast.error("Couldn't Changed the course");
         }
       })
       .catch((err) => {

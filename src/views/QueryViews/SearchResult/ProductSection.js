@@ -87,7 +87,7 @@ export default function ProductSection(props) {
       <GridContainer justify="center">
         <GridItem xs={12} sm={12} md={8}>
           {courses.length > 0 && (
-            <h3 className={classes.title}>'{query}' Category Courses</h3>
+            <h3 className={classes.title}>'{query}' Query Courses</h3>
           )}
         </GridItem>
       </GridContainer>
