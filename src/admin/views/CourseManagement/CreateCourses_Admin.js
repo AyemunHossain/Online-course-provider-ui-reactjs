@@ -15,7 +15,7 @@ import Header from "admin/components/Header/Header";
 import Footer from "components/Footer/Footer.js";
 import axios from "axios";
 import instance from "axios/axiosHeader"
-
+import BackDropProdcess from "components/Preloaders/BackDrop";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -107,7 +107,7 @@ export default function FormPropsTextFields() {
   const classes = useStyles();
   const classesTwo = useStylesTwo();
   const classesThree = useStylesThree();
-
+  const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState([])
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [postimage, setPostImage] = useState();
@@ -133,7 +133,6 @@ export default function FormPropsTextFields() {
       const validationSchema = Yup.object({
         title: Yup.string().required("Title is required"),
         price: Yup.string().required("Price is required"),
-        ///image: Yup.mixed().required("A Image is required"),
         category: Yup.array().required("At least one category is required"),
         description: Yup.string().required("Description is required"),
       });
@@ -151,65 +150,91 @@ export default function FormPropsTextFields() {
           featured: "",
         },
         
-        
         onSubmit: (values) =>
-            handleSubmitCourse(values),
+          handleSubmitCourse(values),
         validationSchema: validationSchema,
       });
 
 
   useEffect(() => {
+    setLoading(true);
     instance
       .get("AdminApi/category-list/")
       .then((res) => {
         if (res.status === 200) {
           setCategory(res.data);
         }
+        setLoading(false);
       })
       .catch((err) => {
-        alert(err);
+        setLoading(false);
+        toast.error(err);
       });
 
   }, [])
 
 
   const handleSubmitCourse =(values)=>{
-    console.log(`Submitted image: ${postimage}`);
-    debugger;
-    const arr=[];
-    selectedCategory.forEach((element) => {
-      arr.push(element.id)
-    });
-    values.category = arr;
-    values.featured = true;
-    values.image = postimage.image[0];
 
-    let formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("price", values.price);
-    formData.append("image", postimage.image[0]);
-    formData.append("discount_price", (values.discount_price?values.discount_price:0));
-    formData.append("description", values.description);
-    formData.append("additional_info", values.additional_info);
-    formData.append("category", values.category);
-    formData.append("featured", values.featured);
+    
 
-          instance
-            .post("AdminApi/courses/", formData)
-            .then((res) => {
-              if (res.status === 201) {
-                toast.success("CourseCreated Successfully");
-                formik.resetForm();
-                setSelectedCategory([]);
-                document.getElementById("image").value = "";
-                
-              } else {
-                toast.error(res.status);
-              }
-            })
+    if (selectedCategory.length > 0) {
+      //you may find this if condition really lame but i could
+      //handle this here without this yup MF didn't work with this  selectedCategory
+      //field currectly
+      setLoading(true);
+      debugger;
 
-            .catch((err) => {});
-        }
+      const arr = [];
+      selectedCategory.forEach((element) => {
+        arr.push(element.id);
+      });
+      values.category = arr;
+      values.featured = true;
+      try {
+        values.image = postimage.image[0];
+      } catch {
+        values.image = null;
+      }
+
+      let formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("price", values.price);
+      formData.append("image", values.image);
+      formData.append(
+        "discount_price",
+        values.discount_price ? values.discount_price : 0
+      );
+      formData.append("description", values.description);
+      formData.append("additional_info", values.additional_info);
+      formData.append("category", values.category);
+      formData.append("featured", values.featured);
+      instance
+        .post("AdminApi/courses/", formData)
+        .then((res) => {
+          if (res.status === 201) {
+            formik.resetForm();
+            setLoading(false);
+            toast.success("CourseCreated Successfully");
+            setSelectedCategory([]);
+            document.getElementById("image").value = "";
+          } else {
+            setLoading(false);
+            toast.error(res.status);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+        });
+    } else {
+      toast.error("Please Select one or multiple category");
+    }
+  }
+  
+    // if (loading) {
+    //   return <BackDropProdcess />;
+    // }
+
 
   return (
     <div>
@@ -233,11 +258,15 @@ export default function FormPropsTextFields() {
           <div
             style={{
               textAlign: "center",
+              alignContent: "center",
               fontSize: "1.5rem",
             }}
           >
             <h1>Create A New Course</h1>
-            <p>Let's get some information to make your interesting course</p>
+            <p>
+              {" "}
+              Let's get some information to make your interesting course
+            </p>
           </div>
           <form
             className={classes.root}
@@ -406,7 +435,7 @@ export default function FormPropsTextFields() {
                           formik.touched.category &&
                           Boolean(selectedCategory.length === 0)
                         }
-                        helperText={Boolean(selectedCategory.length === 0)}
+                        helperText={formik.touched.category && Boolean(selectedCategory.length === 0)}
                         placeholder="Select One or more category..."
                       />
                     )}

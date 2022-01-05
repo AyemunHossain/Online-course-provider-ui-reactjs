@@ -170,7 +170,6 @@ export default function DetailsPage(props) {
    
   return (
     <div>
-      
       <Header
         color="info"
         brand="TechCyrus"
@@ -208,7 +207,7 @@ export default function DetailsPage(props) {
                         component="img"
                         alt={course.title}
                         height="140"
-                        image={"http://127.0.0.1:8000" + course.image}
+                        image={"https://backend.techcyrus.com" + course.image}
                         title={course.title}
                       />
                       <CardContent>

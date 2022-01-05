@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
@@ -19,14 +19,15 @@ const css_card = css`
   background: #fff;
   border-radius: 2px;
   display: inline-block;
-  height: 350px;
-  margin: 1rem;
+  height: 380px;
+  width: 100%;
+  margin-top: 1rem;
   position: relative;
-  width: 300px;
   text-align: left;
   position: relative;
   overflow: hidden;
 `;
+
 const css_header = css`
   padding-left: 1rem;
   padding-top: 1rem;
@@ -36,19 +37,19 @@ const css_subheader = css`
   padding-left: 1rem;
 `;
 
-const css_review = css`
-  padding-left: 2rem;
-`;
-
-const css_price = css`
-  padding-left: 1rem;
-`;
 
 export default function ProductSection(props) {
   const classes = useStyles();
   const courses = props.courses;
   const category = props.category;
   const dispatch = useDispatchCart();
+  const [mobile, setMobile] = useState(false);
+
+    useEffect(() => {
+      if (window.innerWidth < 720) {
+        setMobile(true);
+      }
+    }, []);
 
   const addToCart = async (item) => {
     await instance
@@ -67,109 +68,118 @@ export default function ProductSection(props) {
         }
       });
   } 
+  
 
   return (
     <div className={classes.section}>
       <GridContainer justify="center">
         <GridItem xs={12} sm={12} md={8}>
-          <h3 className={classes.title}>'{category}' Category Courses</h3>
+          {courses.length > 0 && (
+            <h3 className={classes.title}>'{category}' Category Courses</h3>
+          )}
         </GridItem>
       </GridContainer>
-      <div>
+
+      <div style={{margin:10}}>
         <GridContainer>
-          {courses.length > 0 &&
-            courses.map((course, index) => (
-              <GridItem xs={12} sm={12} md={3}>
-                <div css={css_card}>
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "gray",
-                      }}
+          {courses.map((course, index) => (
+            <GridItem xs={12} sm={12} md={4}>
+              <div css={css_card}>
+                <div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "#d4e4ff",
+                    }}
+                  >
+                    <a href={`/course/${course.slug}`}>
+                      <img
+                        height="190"
+                        width="100%"
+                        src={"https://backend.techcyrus.com" + course.image}
+                        alt="profile"
+                      />
+                    </a>
+                  </div>
+
+                  <div css={css_header}>
+                    <h4
+                      className={classes.title}
+                      style={{ color: "black", margin: 0, padding: 0 }}
                     >
-                      <a href={`/course/${course.slug}`}>
-                        <img
-                          height="170"
-                          src={"http://127.0.0.1:8000" + course.image}
-                          alt="profile"
-                        />
-                      </a>
-                    </div>
+                      <a href={`/course/${course.slug}`}>{course.title}</a>
+                    </h4>
+                  </div>
 
-                    <div css={css_header}>
+                  <div css={css_subheader}>
+                    {course.discount_price > 0 &&
+                    course.discount_price < course.price ? (
                       <h4
-                        className={classes.title}
-                        style={{ color: "black", margin: 0, padding: 0 }}
-                      >
-                        <a href={`/course/${course.slug}`}>{course.title}</a>
-                      </h4>
-                    </div>
-
-                    <div css={css_subheader}>
-                      {course.discount_price > 0 &&
-                      course.discount_price < course.price ? (
-                        <h4
-                          style={{
-                            display: "inline",
-                            color: "black",
-                            margin: 0,
-                            padding: 0,
-                          }}
-                        >
-                          <b>{course.discount_price} TK</b>
-                        </h4>
-                      ) : (
-                        <h4
-                          style={{
-                            display: "inline",
-                            color: "black",
-                            margin: 0,
-                            padding: 0,
-                          }}
-                        >
-                          <b>{course.price} TK</b>
-                        </h4>
-                      )}
-                      {course.discount_price > 0 &&
-                        course.discount_price < course.price && (
-                          <h4
-                            style={{
-                              marginLeft: "30px",
-                              display: "inline",
-                              color: "red",
-                              padding: 0,
-                            }}
-                          >
-                            <u>20% Off</u>
-                          </h4>
-                        )}
-                      <h6
-                        className={classes.note}
-                        style={{ color: "black", margin: 0, padding: 0 }}
-                      >
-                        {course.description.slice(0, 100)}...
-                      </h6>
-                    </div>
-                    <div>
-                      <Button
-                        color="info"
-                        style={{ marginLeft: 10, marginRight: 20 }}
-                        onClick={(e) => {
-                          addToCart(course.id);
-                          e.disabled = true;
+                        style={{
+                          display: "inline",
+                          color: "black",
+                          margin: 0,
+                          padding: 0,
                         }}
                       >
-                        Add to cart
-                      </Button>
-                      <Button color="primary">Buy Now</Button>
-                    </div>
+                        <b>{course.discount_price} TK</b>
+                      </h4>
+                    ) : (
+                      <h4
+                        style={{
+                          display: "inline",
+                          color: "black",
+                          margin: 0,
+                          padding: 0,
+                        }}
+                      >
+                        <b>{course.price} TK</b>
+                      </h4>
+                    )}
+                    {course.discount_price > 0 &&
+                      course.discount_price < course.price && (
+                        <h4
+                          style={{
+                            marginLeft: "30px",
+                            display: "inline",
+                            color: "red",
+                            padding: 0,
+                          }}
+                        >
+                          <u>20% Off</u>
+                        </h4>
+                      )}
+                    <h6
+                      className={classes.note}
+                      style={{ color: "black", margin: 0, padding: 0 }}
+                    >
+                      {mobile && course.title.length > 24
+                        ? course.description.slice(0, 60)
+                        : course.description.slice(0, 100)}
+                      ...
+                    </h6>
+                  </div>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-around" }}
+                    className={classes.btngroup}
+                  >
+                    <Button
+                      color="info"
+                      onClick={(e) => {
+                        addToCart(course.id);
+                        e.disabled = true;
+                      }}
+                    >
+                      Add to cart
+                    </Button>
+                    <Button color="primary">Buy Now</Button>
                   </div>
                 </div>
-              </GridItem>
-            ))}
+              </div>
+            </GridItem>
+          ))}
         </GridContainer>{" "}
       </div>
     </div>

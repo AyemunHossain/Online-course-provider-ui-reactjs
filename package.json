@@ -1,7 +1,7 @@
 {
   "name": "tech-cyrus",
   "version": "1.00.0",
-  "homepage": ".",
+  "homepage": "https://techcyrus.com",
   "description": "TechCyrus LTD",
   "private": true,
   "main": "src/index.js",

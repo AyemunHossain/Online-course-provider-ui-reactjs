@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-// nodejs library that concatenates classes
 import classNames from "classnames";
-
 import { makeStyles } from "@material-ui/core/styles";
-// core components
 import Header from "admin/components/Header/Header";
 import Footer from "components/Footer/Footer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -14,12 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import Typography from "@material-ui/core/Typography";
-
 import instance from "axios/axiosHeader";
-// import styles from "assets/jss/material-kit-react/views/landingPage.js";
-
-import image from "assets/img/faces/avatar.jpg";
 import typographyStyle from "assets/jss/material-kit-react/views/componentsSections/typographyStyle.js";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
@@ -33,6 +25,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import ToastLoad from "components/ToastLoad";
 import { toast } from "react-toastify";
+import BackDropProdcess from "components/Preloaders/BackDrop";
 
 
 
@@ -47,6 +40,7 @@ Transition.displayName = "Transition";
 
 export default function CourseList_Admin(props) {
   const classes = useStyles();
+  const [loading, setLoading] = useState(true);
   const InitialCourseFormat = 
     {
       title: "",
@@ -93,10 +87,17 @@ export default function CourseList_Admin(props) {
   // -------------> form actions end
 
   useEffect(() => {
-    instance.get(`/api/courses/`).then((res) => {
-      setCourseList(res.data.results);
-      //console.log(res.data.results);
-    });
+    instance
+      .get(`/api/courses/`)
+      .then((res) => {
+        setCourseList(res.data.results);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+
+
   }, []);
 
   const handleDeleteModalOpen = (rowData, index) => {
@@ -108,44 +109,33 @@ export default function CourseList_Admin(props) {
   
 
     const handleDelete = () => {
+      setLoading(true);
       instance
       .delete(`AdminApi/courses/${deleteID}/`)
       .then((res) => {
         if(res.status===204){
+          setLoading(false);
           toast.success("Course Deleted Successfully");
-
           const newArr = [...courseList];
           newArr.splice(deleteRow, 1);
           setCourseList(newArr);
-            setdDeleteID(null);
-            setdDeleteRow(null);
-            setClassicDeleteModal(false);
+          setdDeleteID(null);
+          setdDeleteRow(null);
+          
+          setClassicDeleteModal(false);
+
         }
         else{
+          setLoading(false);
           toast.error(`${res.statusText}`);
         }        
       });
-
-
-
-      //       toast.success("Course Deleted Successfully");
-      //       // const arr = courseList;
-      //       // const index = arr.findIndex((course) => course.id === values.id);
-      //       // arr[index].title = values.title;
-      //       // arr[index].price = values.price;
-      //       // arr[index].discount_price = values.discount_price;
-      //       // setCourseList(arr);
-      //       // setUpdateButton(true);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     toast.error(err);
-      //   });
     };
 
 
   const handleCourseUpdate = (values) => {
     
+    setLoading(true);
     let formData = new FormData();
     formData.append("title", values.title);
     formData.append("price", values.price);
@@ -154,7 +144,9 @@ export default function CourseList_Admin(props) {
       .patch(`AdminApi/courses/${values.id}/`, formData)
       .then((res) => {
         if (res.status === 200) {
-          toast.success("Course Updated Successfully");
+          
+          handleModalClose(false);
+          
           const arr = courseList;
           const index = arr.findIndex((course) => course.id === values.id);
           arr[index].title = values.title;
@@ -162,11 +154,14 @@ export default function CourseList_Admin(props) {
           arr[index].discount_price = values.discount_price;
           setCourseList(arr);
           setUpdateButton(true);
+          setLoading(false);
+          toast.success("Course Updated Successfully");
         } else {
           toast.error("Couldn't Changed the course");
         }
       })
       .catch((err) => {
+        setLoading(false);
         toast.error(err);
       });
   };
@@ -209,8 +204,13 @@ export default function CourseList_Admin(props) {
   ];
 
   const [classicModal, setClassicModal] = React.useState(false);
-   const [classicDeleteModal, setClassicDeleteModal] = React.useState(false);
-  const navImageClasses = classNames(classes.imgRounded, classes.imgGallery);
+  const [classicDeleteModal, setClassicDeleteModal] = React.useState(false);
+
+  if (loading) {
+    return <BackDropProdcess />;
+  }
+
+
   return (
     <div>
       <Header
@@ -283,7 +283,7 @@ export default function CourseList_Admin(props) {
                     TransitionComponent={Transition}
                     keepMounted
                     onClose={() => {
-                      setClassicDeleteModal(false);
+                      handleModalClose(false);
                     }}
                     aria-labelledby="classic-modal-slide-title"
                     aria-describedby="classic-modal-slide-description"

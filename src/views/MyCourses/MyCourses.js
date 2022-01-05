@@ -294,10 +294,10 @@ export default function MyCourses(props) {
                       >
                         <GridItem xs={12} sm={2} className={classes.marginLeft}>
                           <a
-                            href={`http://localhost:3000/course/${obj.item__slug}`}
+                            href={`https://backend.techcyrus.com/course/${obj.item__slug}`}
                           >
                             <img
-                              src={`http://127.0.0.1:8000/media/${obj.item__image}`}
+                              src={`https://backend.techcyrus.com/media/${obj.item__image}`}
                               alt="..."
                               className={
                                 classes.imgRaised +

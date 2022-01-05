@@ -82,10 +82,13 @@ export default function SearchPage(props) {
         className={classNames(classes.main, classes.mainRaised)}
         style={{ marginTop: 10 }}
       >
-        {courseLength > 0 && <ProductSection courses={courseList} />}
+        {courseLength > 0 && (
+          <div className={classes.container}>
+            <ProductSection courses={courseList} />
+          </div>
+        )}
 
         {courseLength === 0 && loading === false && <NotFound />}
-
       </div>
       <Footer />
     </div>

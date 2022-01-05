@@ -130,11 +130,13 @@ export default function LandingPage(props) {
           </GridContainer>
         </div>
       </Parallax>
+
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <ProductSection courses={courseList[0].id ? courseList : []} />
         </div>
       </div>
+      
       <Footer />
     </div>
   );

@@ -1,7 +1,5 @@
 /*eslint-disable*/
 import React, { useState,useEffect } from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
 import CodeIcon from "@material-ui/icons/Code";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
 import SecurityIcon from "@material-ui/icons/Security";
@@ -12,7 +10,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Tooltip from "@material-ui/core/Tooltip";
 import ShoppingCartOutlinedIcon from "@material-ui/icons/ShoppingCartOutlined";
 // core components
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
@@ -294,7 +291,7 @@ export default function HeaderLinks(props) {
       >
         {props.user.auth && (
           <CoreButton
-            color="secondary"
+            color="dark"
             onClick={() => {
               window.location.href = "/cart";
             }}

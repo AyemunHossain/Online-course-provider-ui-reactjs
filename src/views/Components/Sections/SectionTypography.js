@@ -66,7 +66,7 @@ export default function SectionTypography() {
             </div>
             <div className={classes.typo}>
               <div className={classes.note}>Header 3</div>
-              <h3 className={classes.title}>The Life of Material Kit</h3>
+              <h3 className={classes.title}>The Life of Material Kit dfds</h3>
             </div>
             <div className={classes.typo}>
               <div className={classes.note}>Header 4</div>

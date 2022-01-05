@@ -23,6 +23,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import ToastLoad from "components/ToastLoad";
+import BackDropProdcess from "components/Preloaders/BackDrop";
 
 
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles(styles);
 
 export default function LoginPage(props) {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
 
   const validationSchema = Yup.object({
@@ -58,6 +60,7 @@ export default function LoginPage(props) {
   //start-> Login input handle
 
       const handleSubmit = () => {
+        setLoading(true);
         instance
           .post("api/token/", {
             email: formik.values.email,
@@ -70,19 +73,26 @@ export default function LoginPage(props) {
               instance.defaults.headers["Authorization"] =
                 "JWT " + localStorage.getItem("access_token");
               debugger;
-
+ 
               history.push({
                 pathname: "/",
                 state: { LoginToast: 1 },
               });
-            } else console.log(res);
+            } else{
+              setLoading(false);
+              toast.error("Username or password is wrong");
+            }
           })
           .catch((err) => {
-              
+              setLoading(false);
               toast.error("Username or password is wrong")
           });
       };
 
+  
+      if (loading) {
+        return <BackDropProdcess />;
+      }
 
   //end-> Login input handle
   return (

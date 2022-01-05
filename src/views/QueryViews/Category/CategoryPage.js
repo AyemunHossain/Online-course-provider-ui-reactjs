@@ -6,9 +6,9 @@ import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 import styles from "assets/jss/material-kit-react/views/landingPage.js";
 // Sections for this page
-import ProductSection from "./ProductSection";
+import ProductSection from "views/QueryViews/Category/ProductSection";
 import instance from "axios/axiosHeader";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ToastLoad from "components/ToastLoad";
 import BackDropProdcess from "components/Preloaders/BackDrop";
 import NotFound from "views/404Page/NotFound";
@@ -20,7 +20,6 @@ export default function CategoryPage(props) {
   const { slug } = useParams();
   
   const { ...rest } = props;
-  let history = useHistory();
 
   const InitialCourseFormat = {
     id:"",
@@ -79,11 +78,14 @@ export default function CategoryPage(props) {
         style={{ marginTop: 10 }}
       >
         {courseLength > 0 && (
-          <ProductSection courses={courseList} category={slug} />
+          <div className={classes.container}>
+            <ProductSection courses={courseList} category={slug} />
+          </div>
         )}
 
         {courseLength === 0 && <NotFound />}
       </div>
+
       <Footer />
     </div>
   );

@@ -26,25 +26,25 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Danger from "components/Typography/Danger";
 import BackDropProdcess from "components/Preloaders/BackDrop";
-
+import { toast } from "react-toastify";
+import ToastLoad from "components/ToastLoad";
 
 const useStyles = makeStyles(styles);
 
 export default function Registration(props) {
   const history = useHistory();
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-  
+  const [loading, setLoading] = useState(false);
+
     const validationSchema = Yup.object({
       email: Yup.string()
         .email("Enter a valid Email")
         .required("Please enter your email"),
       username: Yup.string().required("Username is required"),
       password: Yup.string()
-        .required("Please enter your password")
-        .matches(
-          /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-          "Password must contain at least 8 characters, one uppercase, one number and one special case character"
-        ),
+        .required("No password provided.")
+        .min(8, "Password is too short - should be 8 chars minimum.")
+        .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
     });
 
     const formik = useFormik({
@@ -68,22 +68,34 @@ export default function Registration(props) {
 
   //start-> Registration input handle
 
-  const handleSubmit = () => {
-    instance
-     .post("api/register/", {
-        email: formik.values.email,
-        username: formik.values.email,
-        password: formik.values.password,
-      })
-      .then((res) => {
-        if (res.status === 201) {
-         
-           handleSuccessClickOpen();
-         
-        } else console.log(res);
-      });
-  };
+const handleSubmit = () => {
+  setLoading(true);
+  instance
+    .post("api/register/", {
+      email: formik.values.email,
+      username: formik.values.email,
+      password: formik.values.password,
+    })
+    .then((res) => {
+      formik.resetForm();
+      setLoading(false);
+      if (res.status === 201) {
+        handleSuccessClickOpen();
+      } else {
+        formik.resetForm();
+        toast.error("Please try again to different email or username");
+        console.log(res);
+      }
+    })
+    .catch((err) => {
+      formik.resetForm();
+      setLoading(false);
+      toast.error("Please try again to different email or username");
+      console.log(err);
+    });
 
+  setLoading(false);
+};
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -121,10 +133,14 @@ export default function Registration(props) {
 
   //end-> dialog setion 
 
+
+  if (loading) {
+    return <BackDropProdcess />;
+  }
   return (
     <div>
       <Header absolute color="info" brand="TechCyrus" {...rest} />
-
+      <ToastLoad />
       <div
         className={classes.pageHeader}
         style={{
